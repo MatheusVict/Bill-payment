@@ -1,5 +1,6 @@
 package io.matheusVictor;
 
+import io.matheusVictor.dto.PayBillDTO;
 import io.matheusVictor.dto.QueryBilletDTO;
 import io.matheusVictor.dto.QueryBilletDataResponse;
 import io.matheusVictor.dto.TokenDTO;
@@ -31,7 +32,7 @@ public class CelcoinController {
     @ConfigProperty(name = "celcoin.client-secret")
     String clientSecret;
 
-    @POST
+    @GET
     @Path("/token")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getToken() {
@@ -51,13 +52,18 @@ public class CelcoinController {
     @Path("/consult")
     @Produces(MediaType.APPLICATION_JSON)
     public Response consultBillet(QueryBilletDTO queryBilletDTO) {
-        Form form = new Form();
-        form.param("client_id", clientId);
-        form.param("grant_type", grantType);
-        form.param("client_secret", clientSecret);
-
         QueryBilletDataResponse response =
                 celcoinRequests.consultBillet("Bearer ".concat(getTokenDTO().getAccessToken()), queryBilletDTO);
+
+        return Response.ok(response).build();
+    }
+
+    @POST
+    @Path("/payment")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response payBill(PayBillDTO payBillDTO) {
+        String response =
+                celcoinRequests.payBillet("Bearer ".concat(getTokenDTO().getAccessToken()), payBillDTO);
 
         return Response.ok(response).build();
     }

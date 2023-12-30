@@ -1,5 +1,6 @@
 package io.matheusVictor.requests;
 
+import io.matheusVictor.dto.PayBillDTO;
 import io.matheusVictor.dto.QueryBilletDTO;
 import io.matheusVictor.dto.QueryBilletDataResponse;
 import io.matheusVictor.dto.TokenDTO;
@@ -25,6 +26,14 @@ public interface CelcoinRequests {
             @HeaderParam("Authorization")
             String token,
             QueryBilletDTO dto
+    );
+
+    @POST
+    @Path("/v5/transactions/billpayments")
+    String payBillet(
+            @HeaderParam("Authorization")
+            String token,
+            PayBillDTO dto
     );
 
 }
