@@ -1,5 +1,7 @@
 package io.matheusVictor;
 
+import io.matheusVictor.dto.QueryBilletDTO;
+import io.matheusVictor.dto.QueryBilletDataResponse;
 import io.matheusVictor.dto.TokenDTO;
 import io.matheusVictor.requests.CelcoinRequests;
 import jakarta.inject.Inject;
@@ -32,14 +34,32 @@ public class CelcoinController {
     @POST
     @Path("/token")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response hello() {
+    public Response getToken() {
+        return Response.ok(getTokenDTO()).build();
+    }
+
+    private TokenDTO getTokenDTO() {
         Form form = new Form();
         form.param("client_id", clientId);
         form.param("grant_type", grantType);
         form.param("client_secret", clientSecret);
 
-        TokenDTO tokenDTO = celcoinRequests.getToken(form);
-
-        return Response.ok(tokenDTO).build();
+        return celcoinRequests.getToken(form);
     }
+
+    @POST
+    @Path("/consult")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response consultBillet(QueryBilletDTO queryBilletDTO) {
+        Form form = new Form();
+        form.param("client_id", clientId);
+        form.param("grant_type", grantType);
+        form.param("client_secret", clientSecret);
+
+        QueryBilletDataResponse response =
+                celcoinRequests.consultBillet("Bearer ".concat(getTokenDTO().getAccessToken()), queryBilletDTO);
+
+        return Response.ok(response).build();
+    }
+
 }
